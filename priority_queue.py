@@ -89,6 +89,9 @@ class PriorityQueue:
         new_priority = int(function.split()[1])
         self.insert(new_priority)
 
+    def __bool__(self):
+        return bool(self.__queue)
+
 
 def main():
     n = int(input())
