@@ -1,4 +1,4 @@
-# 3 algorithms using dynamic programming, all of which return n-th fibonacci number
+# 3 algorithms using dynamic programming, all of which return n-th number of fibonacci sequence
 
 # 1: Top Down fibonacci
 def fib_td(n: int, memo: list=None) -> int:
@@ -34,3 +34,5 @@ def fib_bu_upgraded(n: int) -> int:
 
 for _ in range(10):
     print(fib_td(_), fib_bu(_), fib_bu_upgraded(_))
+
+# All given algorithms work with speed O(n^2), but last one doesn't consume additional memory
