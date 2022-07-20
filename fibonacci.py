@@ -31,8 +31,20 @@ def fib_bu_upgraded(n: int) -> int:
         a, b = b, a + b
     return a
 
+# bonus fibonacci generator to generate infinite sequences
+def fibonacci_generator() -> int:
+    a = 0
+    b = 1
+    while True:
+        yield a
+        a, b = b, a + b
+    
 
 for _ in range(10):
     print(fib_td(_), fib_bu(_), fib_bu_upgraded(_))
+
+gen = fibonacci_generator()
+for _ in range(10):
+    print(next(gen))
 
 # All given algorithms work with speed O(n^2), but last one doesn't consume additional memory
