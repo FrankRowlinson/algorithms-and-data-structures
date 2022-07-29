@@ -15,7 +15,7 @@ class PriorityQueue:
         for k in range((n >> 1) - 1, -1, -1):
             cls.__siftdown(array, k, n)
 
-    def __siftdown(self, array: list, k: int, n: int) -> None:
+    def _siftdown(self, array: list, k: int, n: int) -> None:
         max_index = n - 1
         while True:
             if k >= max_index:
@@ -31,7 +31,7 @@ class PriorityQueue:
                 array[k], array[right] = array[right], array[k]
                 k = right
 
-    def __siftup(self, array: list, k: int) -> None:
+    def _siftup(self, array: list, k: int) -> None:
         while True:
             if k == 0:
                 break

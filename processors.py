@@ -21,10 +21,33 @@ class Processor:
         return (-self.priority, -self.n) > (-other.priority, -other.n)
 
 
-heap = PriorityQueue()
+class ProcessorQueue(PriorityQueue):
+    def __init__(self, n=100):
+        self.__length = n
+        self.__size = n
+        self.__heap = [Processor() for _ in range(n)]
+
+    def insert(self, el) -> None:
+        self.__heap[-1] = el
+        self.__size += 1
+        n = self.__size
+        k = n - 1
+        self._siftup(self.__heap, k)
+    
+    def extract_max(self) -> int:
+        x = self.__size - self.__length - 1
+        self.__heap[0], self.__heap[x] = self.__heap[x], self.__heap[0]
+        max_el = self.__heap[x]
+        self.__size -= 1
+        n = self.__size
+        k = 0
+        self._siftdown(self.__heap, k, n)
+        return max_el
+
+
 n, m = map(int, stdin.readline().strip().split())
-[heap.insert(Processor()) for _ in range(n)]
 tasks = map(int, stdin.readline().strip().split())
+heap = ProcessorQueue(n)
 for task in tasks:
     processor = heap.extract_max()
     stdout.write(f"{processor.n} {processor.priority}\n")
