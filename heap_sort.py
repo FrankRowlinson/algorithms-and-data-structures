@@ -6,8 +6,7 @@ import heapq
 
 def heap_sort(array):
     heap = pq.PriorityQueue()
-    while array:
-        heap.insert(array.pop())
+    [heap.insert(i) for i in array]
     while heap:
         array.append(heap.extract_max())
     

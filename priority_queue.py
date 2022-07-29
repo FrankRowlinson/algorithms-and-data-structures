@@ -1,108 +1,71 @@
-# implementation of a concept called 'priority queue'
-# a queue where next extractable object is one with the highest priority
-
-# storing priorities of queue via Nodes because then I can just modify values and not actually swap objects
-# and because I like using classes for everything :D
-import sys
-
-
-class Node:
-    __slots__ = 'value',
-
-    def __init__(self, value: int) -> None:
-        self.value = value
-
-    def __setattr__(self, __name: str, __value: int) -> None:
-        if not isinstance(__value, int):
-            raise TypeError("Priority can only be represented by type int")
-        object.__setattr__(self, __name, __value)
+# implementation of a data structure called 'priority queue'
+# a queue where next extracted object is one with the highest priority
+# second version, because first one sucks
+# tried to match user experience to previous implementation but rework internal logic entirely
 
 
 class PriorityQueue:
-    def __init__(self) -> None:
-        self.__queue = list()
+    def __init__(self):
+        self.__heap = list()
+        self.__length = 0
 
-    # extract max by swapping values of root and last leaf, popping last leaf and sifting down
-    def extract_max(self) -> Node or None:
-        if len(self.__queue) == 0:
-            return
-        if len(self.__queue) > 1:
-            self.__queue[0].value, self.__queue[-1].value = self.__queue[-1].value, self.__queue[0].value
-        max_priority = self.__queue.pop().value
-        self.sift_down()
-        return max_priority
-    
-    # insert at the end of the heap and sift up
-    def insert(self, x: int) -> None:
-        self.__queue.append(Node(x))
-        self.sift_up()
+    @classmethod
+    def heapify(cls, array: list) -> None:
+        n = len(array)
+        for k in range((n >> 1) - 1, -1, -1):
+            cls.__siftdown(array, k, n)
 
-    # sift up last leaf of the tree (heap)
-    def sift_up(self) -> None:
-        current_index = len(self.__queue) - 1
-        while current_index != 0:
-            parent_index = (current_index + 1) // 2 - 1
-            if self.__queue[current_index].value > self.__queue[parent_index].value:
-                self.__queue[current_index], self.__queue[parent_index] = self.__queue[parent_index], self.__queue[current_index]
-                current_index = parent_index
-            else:
+    def __siftdown(self, array: list, k: int, n: int) -> None:
+        max_index = n - 1
+        while True:
+            if k >= max_index:
                 break
-
-    def __swap_with_child(self, child_index: int, current_index: int) -> int or None:
-        if self.__queue[child_index].value > self.__queue[current_index].value:
-            self.__queue[child_index].value, self.__queue[current_index].value = \
-                self.__queue[current_index].value, self.__queue[child_index].value
-            return child_index
-        return None
-
-    # sift down root of the tree (heap)     
-    def sift_down(self) -> None:
-        length = len(self.__queue)
-        current_index = 0
-        while (current_index + 1) * 2 <= length:
-            # if our node has only 1 child...
-            if (current_index + 1) * 2 + 1 > length:
-                child_index = (current_index + 1) * 2 - 1
-                # if child's priority is higher, swap
-                current_index = self.__swap_with_child(child_index, current_index)
-                if current_index is None:
-                    break
-            # ...or it has 2 children      
+            left = k * 2 + 1 if k * 2 + 1 <= max_index else k
+            right = k * 2 + 2 if k * 2 + 2 <= max_index else k
+            if array[k] == max(array[k], array[right], array[left]):
+                return
+            if array[left] > array[right]:
+                array[k], array[left] = array[left], array[k]
+                k = left
             else:
-                left_child_index = (current_index + 1) * 2 - 1
-                right_child_index = (current_index + 1) * 2
-                if self.__queue[left_child_index].value > self.__queue[right_child_index].value:
-                    child_index = left_child_index
-                else:
-                    child_index = right_child_index
-                current_index = self.__swap_with_child(child_index, current_index)
-                if current_index is None:
-                    break
-    
-    def __call__(self, function: str) -> None or int:
-        if function.split()[0] not in ('ExtractMax', 'Insert'):
-            raise ValueError(f"'{function}' doesn't match the supported function type")
-        if function == 'ExtractMax':
-            max_priority = self.extract_max()
-            print(max_priority)
-            return max_priority
-        new_priority = int(function.split()[1])
-        self.insert(new_priority)
+                array[k], array[right] = array[right], array[k]
+                k = right
 
+    def __siftup(self, array: list, k: int) -> None:
+        while True:
+            if k == 0:
+                break
+            parent = (k - 1) >> 1
+            if array[k] > array[parent]:
+                array[k], array[parent] = array[parent], array[k]
+                k = parent
+            else:
+                return
+    
+    def insert(self, el) -> None:
+        self.__heap.append(el)
+        self.__length += 1
+        n = self.__length
+        k = n - 1
+        self.__siftup(self.__heap, k)
+    
+    def extract_max(self) -> int:
+        self.__heap[0], self.__heap[-1] = self.__heap[-1], self.__heap[0]
+        max_el = self.__heap.pop()
+        self.__length -= 1
+        n = self.__length
+        k = 0
+        self.__siftdown(self.__heap, k, n)
+        return max_el
+    
     def __bool__(self):
-        return bool(self.__queue)
+        return bool(self.__length)
 
 
-def main():
-    n = int(input())
-    heap = PriorityQueue()
-    for _ in range(n):
-        # using sys.stdin.readline() here, because on high-loaded tests it performs better than input()
-        line = sys.stdin.readline().strip()
-        heap(line)
+pq = PriorityQueue()
+array = [1, 3, 4, 5, 5, 1, 3, 4, 5, 6, 6, 7]
+[pq.insert(i) for i in array]
+while pq:
+    print(pq.extract_max())
+
         
-    
-if __name__ == '__main__':
-    main()
-                
-            
