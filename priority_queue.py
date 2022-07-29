@@ -62,10 +62,15 @@ class PriorityQueue:
         return bool(self.__length)
 
 
-pq = PriorityQueue()
-array = [1, 3, 4, 5, 5, 1, 3, 4, 5, 6, 6, 7]
-[pq.insert(i) for i in array]
-while pq:
-    print(pq.extract_max())
+def main():
+    pq = PriorityQueue()
+    array = [1, 3, 4, 5, 5, 1, 3, 4, 5, 6, 6, 7]
+    [pq.insert(i) for i in array]
+    while pq:
+        print(pq.extract_max())
+
+
+if __name__ == "__main__":
+    main()
 
         
