@@ -54,5 +54,9 @@ class DisjointSets:
             self.add_element(el)
 
 
-sets = DisjointSets([1, 2, 4, 3, 6, 11, 7])
+def main():
+    sets = DisjointSets([1, 2, 4, 3, 6, 11, 7])
             
+
+if __name__ == "__main__":
+    main()
